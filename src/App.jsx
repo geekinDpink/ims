@@ -47,7 +47,7 @@ const App = () => {
     const selItemIndex = dataCopy.findIndex(
       (item) => item.BARCODE === selItem.BARCODE
     );
-    dataCopy[selItemIndex].QUANTITY = selItemIndex.QUANTITY;
+    dataCopy[selItemIndex].QUANTITY = selItem.QUANTITY;
     setData(dataCopy);
     setSelItem({});
   };
@@ -105,8 +105,10 @@ const App = () => {
                 type="number"
                 placeholder="Quantity"
                 name="Quantity"
-                onChange={() => {
-                  // Need to add empty function to prevent warning
+                onChange={(e) => {
+                  const selItemCopy = { ...selItem };
+                  selItemCopy.QUANTITY = e.target.value;
+                  setSelItem(selItemCopy);
                 }}
                 value={selItem.QUANTITY ?? 0}
               />
