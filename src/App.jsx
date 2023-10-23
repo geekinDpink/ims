@@ -100,7 +100,7 @@ const App = () => {
             <p>Weight:{selItem.WEIGHT}</p>
             <p>Unit: {selItem.UNIT}</p>
             <p>
-              Qty:
+              Quantity:
               <input
                 type="number"
                 placeholder="Quantity"
