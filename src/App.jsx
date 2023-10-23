@@ -30,7 +30,7 @@ const App = () => {
       <input type="file" onChange={handleFileUpload} />
       <button onClick={handleSubmit}>Submit</button>
       <div>
-        <input type="file" onChange={handleFileUpload} />
+        <h3>Table Preview</h3>
         <table>
           <thead>
             <tr>
