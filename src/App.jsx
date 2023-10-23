@@ -3,6 +3,7 @@ import { read, utils, writeFile } from "xlsx";
 
 const App = () => {
   const [data, setData] = useState([]);
+  const [selItem, setSelItem] = useState({});
 
   const handleFileUpload = async (event) => {
     const data = await parseExcelFile(event.target.files[0]);
@@ -30,10 +31,41 @@ const App = () => {
     // For example, you could use the Fetch API to upload the file to a backend endpoint
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const itemBarCode = event.target[0].value;
+    const searchResults = data.filter((row) => row.BARCODE === itemBarCode);
+    setSelItem(searchResults[0]);
+    console.log("search result", searchResults[0]);
+  };
+
   return (
     <div>
-      <input type="file" onChange={handleFileUpload} />
-      <button onClick={handleExportFile}>Export File</button>
+      <div>
+        <h3>Upload Inventory File</h3>
+        <input type="file" onChange={handleFileUpload} />
+      </div>
+      <div>
+        <h3>Search Item</h3>
+        <form onSubmit={handleSubmit}>
+          <input type="text" placeholder="Enter barcode" />
+          <button type="submit">Search</button>
+        </form>
+
+        {selItem ? (
+          <div>
+            <p>Description: {selItem.DESCRIPTION}</p>
+            <p>Barcode: {selItem.BARCODE}</p>
+            <p>Weight:{selItem.WEIGHT}</p>
+            <p>Unit: {selItem.UNIT}</p>
+            <p>Qty: {selItem.QUANTITY ?? "-"}</p>
+          </div>
+        ) : (
+          <p>Empty</p>
+        )}
+      </div>
+
       <div>
         <h3>Table Preview</h3>
         <table>
@@ -47,17 +79,27 @@ const App = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((row) => (
-              <tr key={row.DESCRIPTION}>
-                <td>{row.DESCRIPTION}</td>
-                <td>{row.BARCODE}</td>
-                <td>{row.WEIGHT}</td>
-                <td>{row.UNIT}</td>
-                <td>{row.QUANTITY ?? "-"}</td>
+            {data.length > 0 ? (
+              data.map((row) => (
+                <tr key={row.DESCRIPTION}>
+                  <td>{row.DESCRIPTION}</td>
+                  <td>{row.BARCODE}</td>
+                  <td>{row.WEIGHT}</td>
+                  <td>{row.UNIT}</td>
+                  <td>{row.QUANTITY ?? "-"}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td>No record found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
+      </div>
+
+      <div>
+        <button onClick={handleExportFile}>Export File</button>
       </div>
     </div>
   );
