@@ -59,7 +59,18 @@ const App = () => {
             <p>Barcode: {selItem.BARCODE}</p>
             <p>Weight:{selItem.WEIGHT}</p>
             <p>Unit: {selItem.UNIT}</p>
-            <p>Qty: {selItem.QUANTITY ?? "-"}</p>
+            <p>
+              Qty:
+              <input
+                type="number"
+                placeholder="Quantity"
+                name="Quantity"
+                onChange={() => {
+                  // Need to add empty function to prevent warning
+                }}
+                value={selItem.QUANTITY ?? 0}
+              />
+            </p>
           </div>
         ) : (
           <p>Empty</p>
