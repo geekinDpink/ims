@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { read, utils } from "xlsx";
+import { read, utils, writeFile } from "xlsx";
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -20,7 +20,12 @@ const App = () => {
     return data;
   };
 
-  const handleSubmit = async () => {
+  const handleExportFile = async () => {
+    const worksheet = utils.json_to_sheet(data);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "new inventory");
+
+    await writeFile(workbook, "inventory.xlsx", { compression: true });
     // Upload the file to your server here
     // For example, you could use the Fetch API to upload the file to a backend endpoint
   };
@@ -28,7 +33,7 @@ const App = () => {
   return (
     <div>
       <input type="file" onChange={handleFileUpload} />
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleExportFile}>Export File</button>
       <div>
         <h3>Table Preview</h3>
         <table>
