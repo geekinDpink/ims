@@ -1,11 +1,23 @@
-import React, { useState } from "react";
-import { xlsx } from "xlsx";
+import { useState } from "react";
+import { read, utils } from "xlsx";
 
-const FileUploader = () => {
-  const [file, setFile] = useState(null);
+const App = () => {
+  const [data, setData] = useState([]);
 
-  const handleFileUpload = (event) => {
-    setFile(event.target.files[0]);
+  const handleFileUpload = async (event) => {
+    const data = await parseExcelFile(event.target.files[0]);
+    setData(data);
+  };
+
+  const parseExcelFile = async (file) => {
+    console.log("file", file);
+    const fileAB = await file.arrayBuffer();
+    const workbook = read(fileAB);
+    console.log("workbook", workbook);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = utils.sheet_to_json(worksheet);
+    console.log("excel sheet data", data);
+    return data;
   };
 
   const handleSubmit = async () => {
@@ -17,45 +29,33 @@ const FileUploader = () => {
     <div>
       <input type="file" onChange={handleFileUpload} />
       <button onClick={handleSubmit}>Submit</button>
+      <div>
+        <input type="file" onChange={handleFileUpload} />
+        <table>
+          <thead>
+            <tr>
+              <th>Description</th>
+              <th>BARCODE</th>
+              <th>WEIGHT</th>
+              <th>UNIT</th>
+              <th>QUANTITY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row) => (
+              <tr key={row.DESCRIPTION}>
+                <td>{row.DESCRIPTION}</td>
+                <td>{row.BARCODE}</td>
+                <td>{row.WEIGHT}</td>
+                <td>{row.UNIT}</td>
+                <td>{row.QUANTITY ?? "-"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
-
-function App() {
-  const [count, setCount] = useState(0);
-
-  const parseExcelFile = (file) => {
-    const workbook = xlsx.readFile(file);
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = xlsx.utils.sheet_to_json(worksheet);
-
-    return data;
-  };
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  );
-}
 
 export default App;
