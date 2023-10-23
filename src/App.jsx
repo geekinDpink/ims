@@ -4,6 +4,7 @@ import { read, utils, writeFile } from "xlsx";
 const App = () => {
   const [data, setData] = useState([]);
   const [selItem, setSelItem] = useState({});
+  const [addOrMinusQty, setAddOrMinusQty] = useState(0);
 
   const handleFileUpload = async (event) => {
     const data = await parseExcelFile(event.target.files[0]);
@@ -31,13 +32,52 @@ const App = () => {
     // For example, you could use the Fetch API to upload the file to a backend endpoint
   };
 
-  const handleSubmit = async (event) => {
+  // Submit for search item
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const itemBarCode = event.target[0].value;
     const searchResults = data.filter((row) => row.BARCODE === itemBarCode);
     setSelItem(searchResults[0]);
     console.log("search result", searchResults[0]);
+  };
+
+  const changeTotal = () => {
+    const dataCopy = [...data];
+    const selItemIndex = dataCopy.findIndex(
+      (item) => item.BARCODE === selItem.BARCODE
+    );
+    dataCopy[selItemIndex].QUANTITY = selItemIndex.QUANTITY;
+    setData(dataCopy);
+    setSelItem({});
+  };
+
+  const addQty = () => {
+    const dataCopy = [...data];
+    const selItemIndex = dataCopy.findIndex(
+      (item) => item.BARCODE === selItem.BARCODE
+    );
+    const currentQty = dataCopy[selItemIndex].QUANTITY
+      ? parseInt(dataCopy[selItemIndex].QUANTITY)
+      : 0;
+    const newItemQty = currentQty + parseInt(addOrMinusQty);
+    dataCopy[selItemIndex].QUANTITY = newItemQty;
+    setData(dataCopy);
+    setSelItem({});
+  };
+
+  const minusQty = () => {
+    const dataCopy = [...data];
+    const selItemIndex = dataCopy.findIndex(
+      (item) => item.BARCODE === selItem.BARCODE
+    );
+    const currentQty = dataCopy[selItemIndex].QUANTITY
+      ? parseInt(dataCopy[selItemIndex].QUANTITY)
+      : 0;
+    const newItemQty = currentQty - parseInt(addOrMinusQty);
+    dataCopy[selItemIndex].QUANTITY = newItemQty;
+    setData(dataCopy);
+    setSelItem({});
   };
 
   return (
@@ -70,7 +110,23 @@ const App = () => {
                 }}
                 value={selItem.QUANTITY ?? 0}
               />
+              <button onClick={changeTotal}>Change Total</button>
             </p>
+            <p>
+              Add or Minus Qty:
+              <input
+                type="number"
+                placeholder="addOrMinus"
+                name="addOrMinus"
+                onChange={(e) => {
+                  console.log("e", e.target.value);
+                  setAddOrMinusQty(e.target.value);
+                }}
+                value={addOrMinusQty}
+              />
+            </p>
+            <button onClick={addQty}>Add New Quantity</button>
+            <button onClick={minusQty}>Minus New Quantity</button>
           </div>
         ) : (
           <p>Empty</p>
