@@ -5,6 +5,13 @@ const App = () => {
   const [data, setData] = useState([]);
   const [selItem, setSelItem] = useState({});
   const [addOrMinusQty, setAddOrMinusQty] = useState(0);
+  const [remarkState, setRemarkState] = useState("");
+
+  const clearSelForm = () => {
+    setSelItem({});
+    setRemarkState("");
+    setAddOrMinusQty(0);
+  };
 
   const handleFileUpload = async (event) => {
     const data = await parseExcelFile(event.target.files[0]);
@@ -45,39 +52,43 @@ const App = () => {
   const changeTotal = () => {
     const dataCopy = [...data];
     const selItemIndex = dataCopy.findIndex(
-      (item) => item.BARCODE === selItem.BARCODE
+      (item) => item.BARCODE === selItem.BARCODE,
     );
     dataCopy[selItemIndex].QUANTITY = selItem.QUANTITY;
+    dataCopy[selItemIndex].REMARKS = remarkState;
     setData(dataCopy);
-    setSelItem({});
+    clearSelForm();
   };
 
   const addQty = () => {
     const dataCopy = [...data];
     const selItemIndex = dataCopy.findIndex(
-      (item) => item.BARCODE === selItem.BARCODE
+      (item) => item.BARCODE === selItem.BARCODE,
     );
     const currentQty = dataCopy[selItemIndex].QUANTITY
       ? parseInt(dataCopy[selItemIndex].QUANTITY)
       : 0;
     const newItemQty = currentQty + parseInt(addOrMinusQty);
     dataCopy[selItemIndex].QUANTITY = newItemQty;
+    dataCopy[selItemIndex].REMARKS = remarkState;
+
     setData(dataCopy);
-    setSelItem({});
+    clearSelForm();
   };
 
   const minusQty = () => {
     const dataCopy = [...data];
     const selItemIndex = dataCopy.findIndex(
-      (item) => item.BARCODE === selItem.BARCODE
+      (item) => item.BARCODE === selItem.BARCODE,
     );
     const currentQty = dataCopy[selItemIndex].QUANTITY
       ? parseInt(dataCopy[selItemIndex].QUANTITY)
       : 0;
     const newItemQty = currentQty - parseInt(addOrMinusQty);
     dataCopy[selItemIndex].QUANTITY = newItemQty;
+    dataCopy[selItemIndex].REMARKS = remarkState;
     setData(dataCopy);
-    setSelItem({});
+    clearSelForm();
   };
 
   return (
@@ -100,6 +111,18 @@ const App = () => {
             <p>Weight:{selItem.WEIGHT}</p>
             <p>Unit: {selItem.UNIT}</p>
             <p>
+              Remarks
+              <input
+                type="text"
+                placeholder="remarks"
+                name="remarks"
+                onChange={(e) => {
+                  setRemarkState(e.target.value);
+                }}
+                value={remarkState}
+              />
+            </p>
+            <p>
               Quantity:
               <input
                 type="number"
@@ -121,7 +144,6 @@ const App = () => {
                 placeholder="addOrMinus"
                 name="addOrMinus"
                 onChange={(e) => {
-                  console.log("e", e.target.value);
                   setAddOrMinusQty(e.target.value);
                 }}
                 value={addOrMinusQty}
@@ -131,7 +153,7 @@ const App = () => {
             <button onClick={minusQty}>Minus New Quantity</button>
           </div>
         ) : (
-          <p>Empty</p>
+          <p>No item found</p>
         )}
       </div>
 
@@ -145,6 +167,7 @@ const App = () => {
               <th>WEIGHT</th>
               <th>UNIT</th>
               <th>QUANTITY</th>
+              <th>REMARKS</th>
             </tr>
           </thead>
           <tbody>
@@ -156,6 +179,7 @@ const App = () => {
                   <td>{row.WEIGHT}</td>
                   <td>{row.UNIT}</td>
                   <td>{row.QUANTITY ?? "-"}</td>
+                  <td>{row.REMARKS ?? "-"}</td>
                 </tr>
               ))
             ) : (
