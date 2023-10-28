@@ -6,6 +6,7 @@ const App = () => {
   const [selItem, setSelItem] = useState({});
   const [addOrMinusQty, setAddOrMinusQty] = useState(0);
   const [remarkState, setRemarkState] = useState("");
+  const [barCodeScan, setBarCodeScan] = useState("");
 
   const clearSelForm = () => {
     setSelItem({});
@@ -37,6 +38,13 @@ const App = () => {
     await writeFile(workbook, "inventory.xlsx", { compression: true });
     // Upload the file to your server here
     // For example, you could use the Fetch API to upload the file to a backend endpoint
+  };
+
+  const barCodeScanHandler = (event) => {
+    setBarCodeScan(event.target.value);
+    const itemBarCode = event.target.value;
+    const searchResults = data.filter((row) => row.BARCODE === itemBarCode);
+    setSelItem(searchResults[0]);
   };
 
   // Submit for search item
@@ -99,10 +107,22 @@ const App = () => {
       </div>
       <div>
         <h3>Search Item</h3>
+        <h4>Key Bar Code</h4>
         <form onSubmit={handleSubmit}>
           <input type="text" placeholder="Enter barcode" />
           <button type="submit">Search</button>
         </form>
+
+        <h4>For Barcode Scanner</h4>
+        <input
+          type="text"
+          placeholder="Barcode Scanner"
+          name="barcodeScan"
+          value={barCodeScan}
+          onChange={(e) => {
+            barCodeScanHandler(e);
+          }}
+        />
 
         {selItem ? (
           <div>
