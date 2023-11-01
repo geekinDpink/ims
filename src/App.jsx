@@ -20,14 +20,19 @@ const App = () => {
   };
 
   const parseExcelFile = async (file) => {
-    console.log("file", file);
     const fileAB = await file.arrayBuffer();
     const workbook = read(fileAB);
-    console.log("workbook", workbook);
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const data = utils.sheet_to_json(worksheet);
-    console.log("excel sheet data", data);
-    return data;
+    const formattedData = [];
+    data.forEach((row) => {
+      let formattedRow = {};
+      for (const key in row) {
+        formattedRow[key.toUpperCase()] = row[key];
+      }
+      formattedData.push(formattedRow);
+    });
+    return formattedData;
   };
 
   const handleExportFile = async () => {
@@ -54,7 +59,6 @@ const App = () => {
     const itemBarCode = event.target[0].value;
     const searchResults = data.filter((row) => row.BARCODE === itemBarCode);
     setSelItem(searchResults[0]);
-    console.log("search result", searchResults[0]);
   };
 
   const changeTotal = () => {
