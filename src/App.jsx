@@ -104,121 +104,123 @@ const App = () => {
   };
 
   return (
-    <div>
+    <body>
       <div>
-        <h3>Upload Inventory File</h3>
-        <input type="file" onChange={handleFileUpload} />
-      </div>
-      <div>
-        <h3>Search Item</h3>
-        <h4>Key Bar Code</h4>
-        <form onSubmit={handleSubmit}>
-          <input type="text" placeholder="Enter barcode" />
-          <button type="submit">Search</button>
-        </form>
+        <div>
+          <h3>Upload Inventory File</h3>
+          <input type="file" onChange={handleFileUpload} />
+        </div>
+        <div>
+          <h3>Search Item</h3>
+          <h4>Key Bar Code</h4>
+          <form onSubmit={handleSubmit}>
+            <input type="text" placeholder="Enter barcode" />
+            <button type="submit">Search</button>
+          </form>
 
-        <h4>For Barcode Scanner</h4>
-        <input
-          type="text"
-          placeholder="Barcode Scanner"
-          name="barcodeScan"
-          value={barCodeScan}
-          onChange={(e) => {
-            barCodeScanHandler(e);
-          }}
-        />
+          <h4>For Barcode Scanner</h4>
+          <input
+            type="text"
+            placeholder="Barcode Scanner"
+            name="barcodeScan"
+            value={barCodeScan}
+            onChange={(e) => {
+              barCodeScanHandler(e);
+            }}
+          />
 
-        {selItem ? (
-          <div>
-            <p>Description: {selItem.DESCRIPTION}</p>
-            <p>Barcode: {selItem.BARCODE}</p>
-            <p>Weight:{selItem.WEIGHT}</p>
-            <p>Unit: {selItem.UNIT}</p>
-            <p>
-              Remarks
-              <input
-                type="text"
-                placeholder="remarks"
-                name="remarks"
-                onChange={(e) => {
-                  setRemarkState(e.target.value);
-                }}
-                value={remarkState}
-              />
-            </p>
-            <p>
-              Quantity:
-              <input
-                type="number"
-                placeholder="Quantity"
-                name="Quantity"
-                onChange={(e) => {
-                  const selItemCopy = { ...selItem };
-                  selItemCopy.QUANTITY = e.target.value;
-                  setSelItem(selItemCopy);
-                }}
-                value={selItem.QUANTITY ?? 0}
-              />
-              <button onClick={changeTotal}>Change Total</button>
-            </p>
-            <p>
-              Add or Minus Qty:
-              <input
-                type="number"
-                placeholder="addOrMinus"
-                name="addOrMinus"
-                onChange={(e) => {
-                  setAddOrMinusQty(e.target.value);
-                }}
-                value={addOrMinusQty}
-              />
-            </p>
-            <button onClick={addQty}>Add New Quantity</button>
-            <button onClick={minusQty}>Minus New Quantity</button>
-          </div>
-        ) : (
-          <p>No item found</p>
-        )}
-      </div>
+          {selItem ? (
+            <div>
+              <p>Description: {selItem.DESCRIPTION}</p>
+              <p>Barcode: {selItem.BARCODE}</p>
+              <p>Weight:{selItem.WEIGHT}</p>
+              <p>Unit: {selItem.UNIT}</p>
+              <p>
+                Remarks
+                <input
+                  type="text"
+                  placeholder="remarks"
+                  name="remarks"
+                  onChange={(e) => {
+                    setRemarkState(e.target.value);
+                  }}
+                  value={remarkState}
+                />
+              </p>
+              <p>
+                Quantity:
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  name="Quantity"
+                  onChange={(e) => {
+                    const selItemCopy = { ...selItem };
+                    selItemCopy.QUANTITY = e.target.value;
+                    setSelItem(selItemCopy);
+                  }}
+                  value={selItem.QUANTITY ?? 0}
+                />
+                <button onClick={changeTotal}>Change Total</button>
+              </p>
+              <p>
+                Add or Minus Qty:
+                <input
+                  type="number"
+                  placeholder="addOrMinus"
+                  name="addOrMinus"
+                  onChange={(e) => {
+                    setAddOrMinusQty(e.target.value);
+                  }}
+                  value={addOrMinusQty}
+                />
+              </p>
+              <button onClick={addQty}>Add New Quantity</button>
+              <button onClick={minusQty}>Minus New Quantity</button>
+            </div>
+          ) : (
+            <p>No item found</p>
+          )}
+        </div>
 
-      <div>
-        <h3>Table Preview</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th>BARCODE</th>
-              <th>WEIGHT</th>
-              <th>UNIT</th>
-              <th>QUANTITY</th>
-              <th>REMARKS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 ? (
-              data.map((row) => (
-                <tr key={row.DESCRIPTION}>
-                  <td>{row.DESCRIPTION}</td>
-                  <td>{row.BARCODE}</td>
-                  <td>{row.WEIGHT}</td>
-                  <td>{row.UNIT}</td>
-                  <td>{row.QUANTITY ?? "-"}</td>
-                  <td>{row.REMARKS ?? "-"}</td>
-                </tr>
-              ))
-            ) : (
+        <div>
+          <h3>Table Preview</h3>
+          <table>
+            <thead>
               <tr>
-                <td>No record found</td>
+                <th>Description</th>
+                <th>BARCODE</th>
+                <th>WEIGHT</th>
+                <th>UNIT</th>
+                <th>QUANTITY</th>
+                <th>REMARKS</th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {data.length > 0 ? (
+                data.map((row) => (
+                  <tr key={row.DESCRIPTION}>
+                    <td>{row.DESCRIPTION}</td>
+                    <td>{row.BARCODE}</td>
+                    <td>{row.WEIGHT}</td>
+                    <td>{row.UNIT}</td>
+                    <td>{row.QUANTITY ?? "-"}</td>
+                    <td>{row.REMARKS ?? "-"}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td>No record found</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-      <div>
-        <button onClick={handleExportFile}>Export File</button>
+        <div>
+          <button onClick={handleExportFile}>Export File</button>
+        </div>
       </div>
-    </div>
+    </body>
   );
 };
 
