@@ -187,7 +187,7 @@ const App = () => {
           <table>
             <thead>
               <tr>
-                <th>Description</th>
+                <th>DESCRIPTION</th>
                 <th>BARCODE</th>
                 <th>WEIGHT</th>
                 <th>UNIT</th>
